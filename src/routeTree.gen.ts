@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ExportsRouteImport } from './routes/exports'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as LeadsRouteImport } from './routes/leads'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExportsRoute = ExportsRouteImport.update({
+  id: '/exports',
+  path: '/exports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -38,12 +44,14 @@ const LeadsRoute = LeadsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/exports': typeof ExportsRoute
   '/history': typeof HistoryRoute
   '/leads': typeof LeadsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/exports': typeof ExportsRoute
   '/history': typeof HistoryRoute
   '/leads': typeof LeadsRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/exports': typeof ExportsRoute
   '/history': typeof HistoryRoute
   '/leads': typeof LeadsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/history' | '/leads'
+  fullPaths: '/' | '/dashboard' | '/exports' | '/history' | '/leads'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/history' | '/leads'
-  id: '__root__' | '/' | '/dashboard' | '/history' | '/leads'
+  to: '/' | '/dashboard' | '/exports' | '/history' | '/leads'
+  id: '__root__' | '/' | '/dashboard' | '/exports' | '/history' | '/leads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  ExportsRoute: typeof ExportsRoute
   HistoryRoute: typeof HistoryRoute
   LeadsRoute: typeof LeadsRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exports': {
+      id: '/exports'
+      path: '/exports'
+      fullPath: '/exports'
+      preLoaderRoute: typeof ExportsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  ExportsRoute: ExportsRoute,
   HistoryRoute: HistoryRoute,
   LeadsRoute: LeadsRoute,
 }

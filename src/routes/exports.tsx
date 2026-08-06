@@ -48,7 +48,10 @@ function ExportsPage() {
   const { leads } = useStore();
 
   const exportCsv = () => {
-    if (!leads.length) return toast.error("No leads to export yet.");
+    if (!leads.length) {
+      toast.error("No leads to export yet.");
+      return;
+    }
     const rows = [
       COLUMNS.join(","),
       ...leads.map((l) =>
@@ -60,7 +63,10 @@ function ExportsPage() {
   };
 
   const exportJson = () => {
-    if (!leads.length) return toast.error("No leads to export yet.");
+    if (!leads.length) {
+      toast.error("No leads to export yet.");
+      return;
+    }
     download(`lead-hunter-${Date.now()}.json`, JSON.stringify(leads, null, 2), "application/json");
     toast.success("JSON downloaded");
   };
