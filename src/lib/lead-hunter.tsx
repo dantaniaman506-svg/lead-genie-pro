@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-export const WEBHOOK_URL = "https://aribotics770.app.n8n.cloud/webhook/generate-leads";
+export const WEBHOOK_URL = "https://aribotics770.app.n8n.cloud/webhook-test/generate-leads";
 
 export type Lead = {
   id: string;
