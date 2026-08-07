@@ -24,9 +24,8 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { email, theme, toggleTheme, signOut, clearLeads, webhookSecret, setWebhookSecret } = useStore();
+  const { email, theme, toggleTheme, signOut, clearLeads } = useStore();
   const navigate = useNavigate();
-  const [secret, setSecret] = useState(webhookSecret);
 
   return (
     <div className="space-y-5">
