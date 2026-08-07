@@ -11,7 +11,6 @@ export type RawLead = {
   company?: string | null;
   title?: string | null;
   country?: string | null;
-  [k: string]: unknown;
 };
 
 export type WebhookResult =
@@ -29,7 +28,6 @@ type Payload = {
   currency?: string;
   lead_type?: string;
   contact_fields?: string[];
-  [k: string]: unknown;
 };
 
 export const generateLeadsFn = createServerFn({ method: "POST" })
