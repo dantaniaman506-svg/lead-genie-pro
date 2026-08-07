@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { LogOut, Moon, Shield, Trash2, User, Webhook } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
