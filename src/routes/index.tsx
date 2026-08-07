@@ -159,9 +159,18 @@ function LoginPage() {
 
           <button
             type="submit"
-            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground transition-transform active:scale-[0.99]"
+            disabled={submitting}
+            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
           >
-            Login <ArrowRight className="h-5 w-5" />
+            {submitting ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" /> Logging in...
+              </>
+            ) : (
+              <>
+                Login <ArrowRight className="h-5 w-5" />
+              </>
+            )}
           </button>
         </form>
       </div>
