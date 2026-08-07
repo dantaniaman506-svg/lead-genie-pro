@@ -156,7 +156,7 @@ function LeadsPage() {
                 <span className="ml-auto text-xs text-muted-foreground">{timeAgo(lead.createdAt)}</span>
               </div>
               {!lead.phone && (
-                <p className="mt-2 text-xs text-muted-foreground">Phone: fetching — delivered when available.</p>
+                <p className="mt-2 text-xs text-muted-foreground">Phone: not available</p>
               )}
             </div>
           </article>

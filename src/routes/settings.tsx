@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { LogOut, Moon, Shield, Trash2, User, Webhook } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
@@ -24,9 +23,8 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { email, theme, toggleTheme, signOut, clearLeads, webhookSecret, setWebhookSecret } = useStore();
+  const { email, theme, toggleTheme, signOut, clearLeads } = useStore();
   const navigate = useNavigate();
-  const [secret, setSecret] = useState(webhookSecret);
 
   return (
     <div className="space-y-5">
@@ -64,29 +62,14 @@ function SettingsPage() {
         </button>
       </section>
 
-      <section className="card-soft space-y-4 p-5">
+      <section className="card-soft space-y-2 p-5">
         <p className="flex items-center gap-2 font-bold text-foreground">
           <Webhook className="h-5 w-5 text-brand" /> Automation security
         </p>
         <p className="text-sm text-muted-foreground">
-          Optional secret sent as an <code>x-webhook-secret</code> header with every generation request.
+          The automation webhook secret is stored securely on the server and attached to every generation request. No
+          keys are exposed in the browser.
         </p>
-        <input
-          value={secret}
-          onChange={(e) => setSecret(e.target.value.slice(0, 200))}
-          type="password"
-          placeholder="Enter shared secret"
-          className="w-full rounded-2xl border border-border bg-secondary px-4 py-3.5 text-sm outline-none focus:border-brand"
-        />
-        <button
-          onClick={() => {
-            setWebhookSecret(secret.trim());
-            toast.success("Secret saved on this device");
-          }}
-          className="brand-gradient h-12 w-full rounded-2xl text-sm font-bold text-primary-foreground"
-        >
-          Save secret
-        </button>
       </section>
 
       <section className="card-soft space-y-3 p-5">

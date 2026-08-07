@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Moon, Sun, Check } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Moon, Sun, Check, Loader2 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useStore } from "@/lib/lead-hunter";
+import { signInFn } from "@/lib/leads.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,13 +39,27 @@ function LoginPage() {
     if (ready && session) navigate({ to: "/dashboard" });
   }, [ready, session, navigate]);
 
-  const submit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return setError("Please enter a valid email address.");
-    if (password.length < 4) return setError("Password must be at least 4 characters.");
+    if (!password) return setError("Please enter your password.");
     setError("");
-    signIn(email.trim().toLowerCase());
-    navigate({ to: "/dashboard" });
+    setSubmitting(true);
+    try {
+      const res = await signInFn({ data: { email: email.trim(), password } });
+      if (!res.ok) {
+        setError(res.message);
+        return;
+      }
+      signIn(res.email);
+      navigate({ to: "/dashboard" });
+    } catch {
+      setError("Could not sign you in right now. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -144,9 +159,18 @@ function LoginPage() {
 
           <button
             type="submit"
-            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground transition-transform active:scale-[0.99]"
+            disabled={submitting}
+            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
           >
-            Login <ArrowRight className="h-5 w-5" />
+            {submitting ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" /> Logging in...
+              </>
+            ) : (
+              <>
+                Login <ArrowRight className="h-5 w-5" />
+              </>
+            )}
           </button>
         </form>
       </div>
