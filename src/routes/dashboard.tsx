@@ -63,7 +63,7 @@ const LEAD_TYPES = [
 const CONTACT_FIELDS = ["email", "phone", "linkedin", "instagram"];
 
 function Dashboard() {
-  const { name, email, addRun, webhookSecret } = useStore();
+  const { name, email, addRun } = useStore();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"smart" | "chat">("smart");
   const [loading, setLoading] = useState(false);
@@ -101,7 +101,7 @@ function Dashboard() {
       return;
     }
     setLoading(true);
-    const sessionId = `sess_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    const sessionId = crypto.randomUUID();
     const payload: Filters = { ...filters, budgetMin: budget[0], budgetMax: budget[1] };
     const res = await generateLeads({
       sessionId,
