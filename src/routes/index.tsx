@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Moon, Sun, Check } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Moon, Sun, Check, Loader2 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useStore } from "@/lib/lead-hunter";
 import { signInFn } from "@/lib/leads.functions";
