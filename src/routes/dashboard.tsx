@@ -107,7 +107,6 @@ function Dashboard() {
       sessionId,
       ownerEmail: email,
       filters: extra ? { ...payload, propertyType: `${payload.propertyType} | ${extra.prompt}` } : payload,
-      secret: webhookSecret,
     });
     setLoading(false);
 
