@@ -2,21 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Sparkles,
-  MessageSquare,
   Globe,
   User,
-  Building2,
-  PieChart,
-  Bird,
-  Users,
   Home,
   Plus,
   Search,
   ListFilter,
   Check,
   Loader2,
-  Send,
+  Lock,
 } from "lucide-react";
+
 import { AppShell } from "@/components/AppShell";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
