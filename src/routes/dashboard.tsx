@@ -46,21 +46,11 @@ export const Route = createFileRoute("/dashboard")({
 
 const COUNTRIES = ["UAE", "Saudi Arabia", "Qatar", "Kuwait", "United Kingdom", "United States", "India", "Singapore"];
 const STEPS = [10_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000];
-const INVESTOR_TYPES = [
-  { label: "Individual Investor", icon: User },
-  { label: "Venture Capitalist", icon: Building2 },
-  { label: "Private Equity", icon: PieChart },
-  { label: "Angel Investor", icon: Bird },
-  { label: "Family Office", icon: Users },
-];
-const INTEREST_OPTIONS = ["Real Estate", "Hospitality", "Commercial", "Off-plan", "Land", "Luxury Villas"];
+const INVESTOR_TYPES = [{ label: "Investor", icon: User }];
+const INTEREST_OPTIONS = ["Real Estate"];
 const PROPERTY_TYPES = ["Villa", "Apartment", "Townhouse", "Commercial", "Land", "Any"];
-const LEAD_TYPES = [
-  { value: "investor", label: "Investor" },
-  { value: "retail_buyer", label: "Retail Buyer" },
-  { value: "both", label: "Both" },
-];
-const CONTACT_FIELDS = ["email", "phone", "linkedin", "instagram"];
+const LOCKED_CONTACT_FIELDS = ["email", "phone", "instagram"];
+
 
 function Dashboard() {
   const { name, email, addRun } = useStore();
