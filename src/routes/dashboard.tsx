@@ -140,52 +140,13 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          {(
-            [
-              { key: "smart", label: "Smart Search", icon: Sparkles },
-              { key: "chat", label: "AI Chat Search", icon: MessageSquare },
-            ] as const
-          ).map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setMode(t.key)}
-              className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-4 text-sm font-semibold transition-colors ${
-                mode === t.key
-                  ? "border-brand bg-brand/10 text-foreground"
-                  : "border-border bg-secondary text-muted-foreground"
-              }`}
-            >
-              <t.icon className={`h-5 w-5 ${mode === t.key ? "text-brand" : ""}`} />
-              {t.label}
-            </button>
-          ))}
+        <div className="mt-5 flex items-center gap-2 rounded-2xl border border-brand/40 bg-brand/10 px-4 py-3 text-sm font-semibold text-foreground">
+          <Sparkles className="h-5 w-5 text-brand" />
+          Smart Search
         </div>
       </section>
 
-      {mode === "chat" ? (
-        <section className="card-soft space-y-4 p-6">
-          <h2 className="text-xl font-extrabold text-foreground">AI Chat Search</h2>
-          <p className="text-sm text-muted-foreground">
-            Describe who you are looking for in plain language. Your filters below still apply.
-          </p>
-          <textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value.slice(0, 500))}
-            rows={4}
-            placeholder="e.g. Family offices in Dubai investing $5M+ into off-plan waterfront villas"
-            className="w-full rounded-2xl border border-border bg-secondary p-4 text-sm outline-none placeholder:text-muted-foreground focus:border-brand"
-          />
-          <button
-            disabled={loading || prompt.trim().length < 5}
-            onClick={() => run({ prompt: prompt.trim() })}
-            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground disabled:opacity-60"
-          >
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-            {loading ? "Hunting leads..." : "Ask AI & Generate"}
-          </button>
-        </section>
-      ) : null}
+
 
       <section className="card-soft space-y-7 p-6">
         <h2 className="text-xl font-extrabold text-foreground">Find Investors</h2>
