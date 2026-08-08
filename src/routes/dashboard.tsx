@@ -314,29 +314,29 @@ function Dashboard() {
                   ))}
                 </div>
               </Field>
-              <Field label="Lead Type">
-                <div className="flex flex-wrap gap-2">
-                  {LEAD_TYPES.map((l) => (
-                    <Chip key={l.value} on={filters.leadType === l.value} onClick={() => setFilters((f) => ({ ...f, leadType: l.value }))}>
-                      {l.label}
-                    </Chip>
-                  ))}
-                </div>
-                {filters.leadType !== "investor" && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Retail buyer results are an approximation based on professional signals, not confirmed buying intent.
-                  </p>
-                )}
-              </Field>
               <Field label="Contact Fields">
                 <div className="flex flex-wrap gap-2">
-                  {CONTACT_FIELDS.map((c) => (
-                    <Chip key={c} on={filters.contactFields.includes(c)} onClick={() => toggle("contactFields", c)}>
+                  <Chip on onClick={() => {}}>
+                    linkedin
+                  </Chip>
+                  {LOCKED_CONTACT_FIELDS.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() =>
+                        toast.info("This is a demo — email and phone stay locked until the developer grants full access.")
+                      }
+                      className="flex items-center gap-1.5 rounded-full border border-dashed border-border bg-card px-3.5 py-2 text-xs font-semibold capitalize text-muted-foreground/70"
+                    >
+                      <Lock className="h-3.5 w-3.5" />
                       {c}
-                    </Chip>
+                    </button>
                   ))}
                 </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Demo access returns LinkedIn profiles only. Email and phone enrichment unlocks with full developer access.
+                </p>
               </Field>
+
               <Field label={`Leads per generation: ${filters.limit}`}>
                 <Slider
                   value={[filters.limit]}
