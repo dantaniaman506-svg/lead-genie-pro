@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-const WEBHOOK_URL = "https://ciyen80533.app.n8n.cloud/webhook/linkedin-leads";
+const WEBHOOK_URL = "https://ciyen80533.app.n8n.cloud/webhook-test/0bec7725-1da1-4248-bec8-d7845ad1ff2c";
 
 export type RawLead = {
   name?: string | null;
