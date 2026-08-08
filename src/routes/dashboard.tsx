@@ -2,21 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Sparkles,
-  MessageSquare,
   Globe,
   User,
-  Building2,
-  PieChart,
-  Bird,
-  Users,
   Home,
   Plus,
   Search,
   ListFilter,
   Check,
   Loader2,
-  Send,
+  Lock,
 } from "lucide-react";
+
 import { AppShell } from "@/components/AppShell";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
@@ -46,30 +42,18 @@ export const Route = createFileRoute("/dashboard")({
 
 const COUNTRIES = ["UAE", "Saudi Arabia", "Qatar", "Kuwait", "United Kingdom", "United States", "India", "Singapore"];
 const STEPS = [10_000, 100_000, 500_000, 1_000_000, 5_000_000, 10_000_000];
-const INVESTOR_TYPES = [
-  { label: "Individual Investor", icon: User },
-  { label: "Venture Capitalist", icon: Building2 },
-  { label: "Private Equity", icon: PieChart },
-  { label: "Angel Investor", icon: Bird },
-  { label: "Family Office", icon: Users },
-];
-const INTEREST_OPTIONS = ["Real Estate", "Hospitality", "Commercial", "Off-plan", "Land", "Luxury Villas"];
+const INVESTOR_TYPES = [{ label: "Investor", icon: User }];
+const INTEREST_OPTIONS = ["Real Estate"];
 const PROPERTY_TYPES = ["Villa", "Apartment", "Townhouse", "Commercial", "Land", "Any"];
-const LEAD_TYPES = [
-  { value: "investor", label: "Investor" },
-  { value: "retail_buyer", label: "Retail Buyer" },
-  { value: "both", label: "Both" },
-];
-const CONTACT_FIELDS = ["email", "phone", "linkedin", "instagram"];
+const LOCKED_CONTACT_FIELDS = ["email", "phone", "instagram"];
+
 
 function Dashboard() {
   const { name, email, addRun } = useStore();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"smart" | "chat">("smart");
   const [loading, setLoading] = useState(false);
   const [openCountries, setOpenCountries] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
-  const [prompt, setPrompt] = useState("");
 
   const [filters, setFilters] = useState<Filters>({
     countries: ["UAE"],
@@ -78,9 +62,9 @@ function Dashboard() {
     budgetMax: 10_000_000,
     currency: "USD",
     leadType: "investor",
-    investorTypes: ["Individual Investor"],
+    investorTypes: ["Investor"],
     interests: ["Real Estate"],
-    contactFields: ["email", "linkedin"],
+    contactFields: ["linkedin"],
     limit: 20,
   });
 
@@ -94,7 +78,7 @@ function Dashboard() {
       return { ...f, [key]: next.length ? next : list };
     });
 
-  async function run(extra?: { prompt: string }) {
+  async function run() {
     if (!email) return;
     if (!filters.countries.length) {
       toast.error("Select at least one country.");
@@ -106,8 +90,9 @@ function Dashboard() {
     const res = await generateLeads({
       sessionId,
       ownerEmail: email,
-      filters: extra ? { ...payload, propertyType: `${payload.propertyType} | ${extra.prompt}` } : payload,
+      filters: payload,
     });
+
     setLoading(false);
 
     const base = {
@@ -150,52 +135,13 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          {(
-            [
-              { key: "smart", label: "Smart Search", icon: Sparkles },
-              { key: "chat", label: "AI Chat Search", icon: MessageSquare },
-            ] as const
-          ).map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setMode(t.key)}
-              className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-4 text-sm font-semibold transition-colors ${
-                mode === t.key
-                  ? "border-brand bg-brand/10 text-foreground"
-                  : "border-border bg-secondary text-muted-foreground"
-              }`}
-            >
-              <t.icon className={`h-5 w-5 ${mode === t.key ? "text-brand" : ""}`} />
-              {t.label}
-            </button>
-          ))}
+        <div className="mt-5 flex items-center gap-2 rounded-2xl border border-brand/40 bg-brand/10 px-4 py-3 text-sm font-semibold text-foreground">
+          <Sparkles className="h-5 w-5 text-brand" />
+          Smart Search
         </div>
       </section>
 
-      {mode === "chat" ? (
-        <section className="card-soft space-y-4 p-6">
-          <h2 className="text-xl font-extrabold text-foreground">AI Chat Search</h2>
-          <p className="text-sm text-muted-foreground">
-            Describe who you are looking for in plain language. Your filters below still apply.
-          </p>
-          <textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value.slice(0, 500))}
-            rows={4}
-            placeholder="e.g. Family offices in Dubai investing $5M+ into off-plan waterfront villas"
-            className="w-full rounded-2xl border border-border bg-secondary p-4 text-sm outline-none placeholder:text-muted-foreground focus:border-brand"
-          />
-          <button
-            disabled={loading || prompt.trim().length < 5}
-            onClick={() => run({ prompt: prompt.trim() })}
-            className="brand-gradient glow-brand flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-base font-bold text-primary-foreground disabled:opacity-60"
-          >
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-            {loading ? "Hunting leads..." : "Ask AI & Generate"}
-          </button>
-        </section>
-      ) : null}
+
 
       <section className="card-soft space-y-7 p-6">
         <h2 className="text-xl font-extrabold text-foreground">Find Investors</h2>
@@ -324,29 +270,29 @@ function Dashboard() {
                   ))}
                 </div>
               </Field>
-              <Field label="Lead Type">
-                <div className="flex flex-wrap gap-2">
-                  {LEAD_TYPES.map((l) => (
-                    <Chip key={l.value} on={filters.leadType === l.value} onClick={() => setFilters((f) => ({ ...f, leadType: l.value }))}>
-                      {l.label}
-                    </Chip>
-                  ))}
-                </div>
-                {filters.leadType !== "investor" && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Retail buyer results are an approximation based on professional signals, not confirmed buying intent.
-                  </p>
-                )}
-              </Field>
               <Field label="Contact Fields">
                 <div className="flex flex-wrap gap-2">
-                  {CONTACT_FIELDS.map((c) => (
-                    <Chip key={c} on={filters.contactFields.includes(c)} onClick={() => toggle("contactFields", c)}>
+                  <Chip on onClick={() => {}}>
+                    linkedin
+                  </Chip>
+                  {LOCKED_CONTACT_FIELDS.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() =>
+                        toast.info("This is a demo — email and phone stay locked until the developer grants full access.")
+                      }
+                      className="flex items-center gap-1.5 rounded-full border border-dashed border-border bg-card px-3.5 py-2 text-xs font-semibold capitalize text-muted-foreground/70"
+                    >
+                      <Lock className="h-3.5 w-3.5" />
                       {c}
-                    </Chip>
+                    </button>
                   ))}
                 </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Demo access returns LinkedIn profiles only. Email and phone enrichment unlocks with full developer access.
+                </p>
               </Field>
+
               <Field label={`Leads per generation: ${filters.limit}`}>
                 <Slider
                   value={[filters.limit]}
