@@ -4,13 +4,20 @@ const WEBHOOK_URL = "https://ciyen80533.app.n8n.cloud/webhook/linkedin-leads";
 
 export type RawLead = {
   name?: string | null;
+  fullName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string | null;
   linkedin?: string | null;
+  linkedinUrl?: string | null;
   instagram?: string | null;
   phone?: string | null;
   company?: string | null;
   title?: string | null;
+  jobTitle?: string | null;
+  headline?: string | null;
   country?: string | null;
+  location?: string | null;
 };
 
 export type WebhookResult =
