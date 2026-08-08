@@ -51,11 +51,9 @@ const LOCKED_CONTACT_FIELDS = ["email", "phone", "instagram"];
 function Dashboard() {
   const { name, email, addRun } = useStore();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"smart" | "chat">("smart");
   const [loading, setLoading] = useState(false);
   const [openCountries, setOpenCountries] = useState(false);
   const [openFilters, setOpenFilters] = useState(false);
-  const [prompt, setPrompt] = useState("");
 
   const [filters, setFilters] = useState<Filters>({
     countries: ["UAE"],
@@ -64,9 +62,9 @@ function Dashboard() {
     budgetMax: 10_000_000,
     currency: "USD",
     leadType: "investor",
-    investorTypes: ["Individual Investor"],
+    investorTypes: ["Investor"],
     interests: ["Real Estate"],
-    contactFields: ["email", "linkedin"],
+    contactFields: ["linkedin"],
     limit: 20,
   });
 
@@ -80,7 +78,7 @@ function Dashboard() {
       return { ...f, [key]: next.length ? next : list };
     });
 
-  async function run(extra?: { prompt: string }) {
+  async function run() {
     if (!email) return;
     if (!filters.countries.length) {
       toast.error("Select at least one country.");
@@ -92,8 +90,9 @@ function Dashboard() {
     const res = await generateLeads({
       sessionId,
       ownerEmail: email,
-      filters: extra ? { ...payload, propertyType: `${payload.propertyType} | ${extra.prompt}` } : payload,
+      filters: payload,
     });
+
     setLoading(false);
 
     const base = {
