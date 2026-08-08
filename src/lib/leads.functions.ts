@@ -4,13 +4,20 @@ const WEBHOOK_URL = "https://ciyen80533.app.n8n.cloud/webhook/linkedin-leads";
 
 export type RawLead = {
   name?: string | null;
+  fullName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string | null;
   linkedin?: string | null;
+  linkedinUrl?: string | null;
   instagram?: string | null;
   phone?: string | null;
   company?: string | null;
   title?: string | null;
+  jobTitle?: string | null;
+  headline?: string | null;
   country?: string | null;
+  location?: string | null;
 };
 
 export type WebhookResult =
@@ -65,24 +72,34 @@ export const generateLeadsFn = createServerFn({ method: "POST" })
       payload = null;
     }
 
-    const obj = (payload ?? {}) as Record<string, unknown>;
+    const obj = (Array.isArray(payload) ? { leads: payload } : (payload ?? {})) as Record<string, unknown>;
     const status = typeof obj["status"] === "string" ? (obj["status"] as string) : null;
     const message = typeof obj["message"] === "string" ? (obj["message"] as string) : null;
 
-    if (status === "success") {
-      const leads = Array.isArray(obj["leads"]) ? (obj["leads"] as RawLead[]) : [];
-      return {
-        status: "success",
-        lead_count: typeof obj["lead_count"] === "number" ? (obj["lead_count"] as number) : leads.length,
-        leads,
-        ...(message ? { message } : {}),
-      };
+    // Accept common array containers used by different automations
+    const arrayKeys = ["leads", "data", "items", "results", "records"];
+    let leads: RawLead[] = [];
+    for (const k of arrayKeys) {
+      if (Array.isArray(obj[k])) {
+        leads = obj[k] as RawLead[];
+        break;
+      }
     }
-    if (status === "no_results") {
-      return { status: "no_results", lead_count: 0, message: message ?? "No leads found — try widening your filters." };
-    }
+
     if (status === "error") {
       return { status: "error", message: message ?? "The lead service returned an error." };
+    }
+
+    if (res.ok && (status === "success" || leads.length > 0 || obj["success"] === true)) {
+      if (!leads.length) {
+        return { status: "no_results", lead_count: 0, message: message ?? "No leads found — try widening your filters." };
+      }
+      const count = typeof obj["lead_count"] === "number" ? (obj["lead_count"] as number) : typeof obj["count"] === "number" ? (obj["count"] as number) : leads.length;
+      return { status: "success", lead_count: count, leads, ...(message ? { message } : {}) };
+    }
+
+    if (status === "no_results") {
+      return { status: "no_results", lead_count: 0, message: message ?? "No leads found — try widening your filters." };
     }
 
     if (!res.ok) {
@@ -95,6 +112,10 @@ export const generateLeadsFn = createServerFn({ method: "POST" })
               ? "Lead source temporarily unavailable. Please try again shortly."
               : `System is busy (${res.status}). Please try again shortly.`;
       return { status: "error", message: message ?? fallback };
+    }
+
+    if (res.ok) {
+      return { status: "no_results", lead_count: 0, message: message ?? "No leads found — try widening your filters." };
     }
 
     return { status: "error", message: "Unexpected response from the lead service." };
