@@ -17,15 +17,20 @@ function clean(v: unknown): string | null {
 
 function normalize(raw: RawLead, sessionId: string, filters: Filters, i: number): Lead {
   const email = clean(raw.email);
+  const name =
+    clean(raw.name) ??
+    clean(raw.fullName) ??
+    [clean(raw.firstName), clean(raw.lastName)].filter(Boolean).join(" ") ??
+    "";
   return {
     id: `${sessionId}-${i}`,
-    name: clean(raw.name) ?? "Unknown Lead",
-    title: clean(raw.title) ?? "—",
+    name: name || "Unknown Lead",
+    title: clean(raw.title) ?? clean(raw.jobTitle) ?? clean(raw.headline) ?? "—",
     company: clean(raw.company) ?? "—",
-    country: clean(raw.country) ?? (filters.countries[0] ?? "—"),
+    country: clean(raw.country) ?? clean(raw.location) ?? (filters.countries[0] ?? "—"),
     email,
     phone: clean(raw.phone),
-    linkedin: clean(raw.linkedin),
+    linkedin: clean(raw.linkedin) ?? clean(raw.linkedinUrl),
     instagram: clean(raw.instagram),
     budget: "—",
     interest: filters.interests[0] ?? "Real Estate",
